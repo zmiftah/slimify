@@ -1,0 +1,137 @@
+{% macro alert(pesan, tipe) %}
+    {% if pesan|length > 0 %}
+    {% set type = tipe == 'error' ? 'alert-danger' : 'alert-success' %}
+    <div id="pesan" class="alert {{ type }}">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>{{ pesan|raw }}</strong>
+    </div>
+    {% endif %}
+{% endmacro %}
+
+{% macro alert_js(pesan) %}
+    {% if pesan|length > 0 %}
+    $("#pesan").alert();
+    {% endif %}
+{% endmacro %}
+
+{% macro select_search_field(value) %}
+    {% set data = [
+        {'id':'no_surat', 'name':'Nomor Surat'},
+        {'id':'asal_surat', 'name':'Asal Surat'},
+        {'id':'tanggal', 'name':'Tanggal'},
+        {'id':'tempat', 'name':'Tempat'}
+    ] %}
+
+    <select class="form-control" name="search_field" id="id_search_field" required>
+        <option value="">--- Pencarian Berdasarkan ---</option>
+        {% for field in data %}
+        {% set slc = value == field.id ? ' selected' : '' %}
+        <option value="{{ field.id }}"{{ slc }}>{{ field.name }}</option>
+        {% endfor %}
+    </select>
+{% endmacro %}
+
+{% macro select_role(data, value) %}
+    <select class="form-control" name="role" id="id_role">
+        <option value="-1">--- Pilih Role ---</option>
+        {% for role in data %}
+        {% set slc = value == role.id ? ' selected' : '' %}
+        <option value="{{ role.id }}"{{ slc }}>{{ role.name }}</option>
+        {% endfor %}
+    </select>
+{% endmacro %}
+
+{% macro js_form_disposis(action_url) %}
+    $('.add_disposisi').on('click', function(){
+        var event_id = $(this).attr('tag');
+
+        $('.modal-title').html('Tambah Disposisi');
+        $('#btn_user>span').html('Tambah');
+        $('#mode').val('Tambah');
+        $('#event_id').val(event_id);
+
+        $('#form_disposisi').modal();
+    });
+    $('.del_disposisi').on('click', function(){
+        var id = $(this).attr('tag'),
+            name = $(this).attr('title');
+
+        if (!confirm('Anda yakin akan menghapus '+name+'?')) return false;
+
+        $.ajax({
+            url:'{{ action_url }}',
+            type:'POST',
+            data:{ mode:'Hapus', id:id, name:name }, 
+            dataType:'json'
+        }).done(function(data){
+            alert(data.message);
+
+            if(data.result==1) {    
+                location.reload();
+            }
+        });
+    });
+    $('#btn_user').on('click', function(){
+        var event_id, mode, name, email, ingat;
+
+        event_id = $('#event_id').val();
+        mode = $('#mode').val();
+        name = $('#name').val();
+        email = $('#email').val();
+        ingat = $('#ingatkan:checked').val();
+
+        $.ajax({
+            url:'{{ action_url }}',
+            type:'POST',
+            data:{ event_id:event_id, mode:mode, name:name, email:email, ingat:ingat }, 
+            dataType:'json'
+        }).done(function(data){
+            alert(data.message);
+
+            if(data.result==1) {    
+                location.reload();
+            }
+        });
+    });
+{% endmacro %}
+
+{% macro form_disposisi() %}
+<div id="form_disposisi" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Tambah Disposisi</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <input type="hidden" name="mode" id="mode">
+                    <input type="hidden" name="event_id" id="event_id">
+
+                    <div class="form-group">
+                        <label for="name">Nama</label>
+                        <input class="form-control" type="text" id="name" placeholder="Nama" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input class="form-control" type="email" id="email" placeholder="Email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input id="ingatkan" type="checkbox" value="1"> Ingatkan lewat Email
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-success" id="btn_user">
+                    <i class="glyphicon glyphicon-saved"></i> <span>Tambah</span>
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{% endmacro %}

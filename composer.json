@@ -1,0 +1,20 @@
+{
+    "require": {
+        "php":">=5.3.0",
+        "slim/slim": "2.4.*",
+        "rgsone/slim-lazy-controller-connector": "v2.0",
+        "j4mie/paris": "v1.5.3",
+        "twig/twig": "v1.16.0",
+        "phpmailer/phpmailer": "v5.2.8",
+        "slim/views": "0.1.*",
+        "slim/logger": "0.1.*",
+        "nategood/commando": "*"
+    },
+    "autoload": {
+        "classmap": [
+            "app\\lib",
+            "app\\model",
+            "app\\controller"
+        ]
+    }
+}
