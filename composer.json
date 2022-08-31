@@ -5,7 +5,7 @@
         "rgsone/slim-lazy-controller-connector": "v2.0",
         "j4mie/paris": "v1.5.3",
         "twig/twig": "v1.16.0",
-        "phpmailer/phpmailer": "v5.2.8",
+        "phpmailer/phpmailer": "v6.5.0",
         "slim/views": "0.1.*",
         "slim/logger": "0.1.*",
         "nategood/commando": "*"
